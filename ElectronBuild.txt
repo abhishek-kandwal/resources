@@ -1,0 +1,88 @@
+Blog :- https://www.christianengvall.se/electron-packager-tutorial/
+
+1. Install Electron packager
+Electron packager is created by electron-userland and this is what they say about it:
+
+"Electron Packager is a command line tool and Node.js library that bundles Electron-based application source code with a renamed Electron executable and supporting files into folders ready for distribution."
+So lets go ahead and install it. Run these commands in the terminal in the app folder:
+
+# for use in npm scripts
+npm install electron-packager --save-dev
+
+# for use from cli
+npm install electron-packager -g
+2. Setting productname and electron version
+Electron packager looks for a product name in package.json, so lets go ahead and add one. We also need to add what version of electron to package the app with.
+
+Lets begin with the electron version. We’ll add that from the terminal with this command:
+
+npm install --save-dev electron
+Now when that is done open up package.json and add a productname:
+
+{
+ "name": "electron-tutorial-app",
+ "productName": "Electron tutorial app",
+ "version": "0.1.0",
+ "main": "main.js",
+ "devDependencies": {
+ "electron": "^1.4.3",
+ "electron-packager": "^8.1.0"
+ }
+}
+3. Building MacOS, Windows and Linux package from the terminal
+To get to know what all these flags do, and what more flags exists you can read the electron-packager api.
+
+MacOS
+Now you can run this command from the terminal to build a package for mac:
+
+electron-packager . --overwrite --platform=darwin --arch=x64 --icon=assets/icons/mac/icon.icns --prune=true --out=release-builds
+Electron packager mac
+Electron packager mac
+
+Windows
+And to build for Windows you can run this from the git bash:
+
+electron-packager . electron-tutorial-app --overwrite --asar=true --platform=win32 --arch=ia32 --icon=assets/icons/win/icon.ico --prune=true --out=release-builds --version-string.CompanyName=CE --version-string.FileDescription=CE --version-string.ProductName="Electron Tutorial App"
+Electron packager windows
+Electron packager windows
+
+Linux
+electron-packager . electron-tutorial-app --overwrite --asar=true --platform=linux --arch=x64 --icon=assets/icons/png/1024x1024.png --prune=true --out=release-builds
+Electron packager ubuntu linux
+Electron packager ubuntu linux
+
+overwrite: replaces any existing output directory when packaging.
+
+platform: The target platform to build for
+
+arch: the architecture to build for
+
+icon: sets the icon for the app
+
+prune: runs npm prune –production before packaging the app. It removes unnecesary packages.
+
+out: the name of the directory where the packages are created.
+
+4. Shortcuts
+To make it easier to create new builds we can create scripts in package.json so that we don’t have to remember all these settings. Add the scripts below, making your package.json look like this:
+
+{
+ "name": "electron-tutorial-app",
+ "productName": "Electron tutorial app",
+ "version": "0.1.0",
+ "main": "main.js",
+ "devDependencies": {
+ "electron": "^1.4.3",
+ "electron-packager": "^8.1.0"
+ },
+ "scripts": {
+ "package-mac": "electron-packager . --overwrite --platform=darwin --arch=x64 --icon=assets/icons/mac/icon.icns --prune=true --out=release-builds",
+"package-win": "electron-packager . electron-tutorial-app --overwrite --asar=true --platform=win32 --arch=ia32 --icon=assets/icons/win/icon.ico --prune=true --out=release-builds --version-string.CompanyName=CE --version-string.FileDescription=CE --version-string.ProductName=\"Electron Tutorial App\"",    
+"package-linux": "electron-packager . electron-tutorial-app --overwrite --asar=true --platform=linux --arch=x64 --icon=assets/icons/png/1024x1024.png --prune=true --out=release-builds"
+ }
+}
+Now you can run:
+
+npm run package-mac
+npm run package-win
+npm run package-linux
